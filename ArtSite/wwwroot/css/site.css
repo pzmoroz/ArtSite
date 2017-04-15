@@ -58,3 +58,8 @@ textarea {
     max-width: 100vh;
     width: auto;
 }
+
+#ArtImg {
+    position: absolute;
+
+}

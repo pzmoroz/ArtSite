@@ -5,11 +5,96 @@
     var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
 }
 
-@*<meta http-equiv="refresh" content="30; URL=http://localhost:8056/art">*@
-<meta http-equiv="refresh" content="30; URL=http://192.168.1.44:8055/art">
 
-<div style="text-align: center;">
-    <img src="@imgSrc" style="max-height: 1080px; height: auto; max-width: 100%; " alt="FYI, image alt text is required" />
+<script>
+    function resizeImg(image) {
+
+        var maxHeight = window.innerHeight;
+
+        var maxWidth = window.innerWidth;
+        
+        if (image.height > maxHeight) {
+
+            image.style.height = maxHeight + 'px';
+            image.style.width = 'auto';
+        }
+
+        if (image.width > maxWidth) {
+            image.style.width = maxWidth + 'px';
+            image.style.height = 'auto';
+
+        }
+
+        if (image.width < maxWidth) {
+            var left = (maxWidth - image.width) / 2;
+            image.style.left = left + "px";
+        } else {
+            image.style.left = 0 + "px";
+        }
+
+        if (image.height < maxHeight) {
+            var top = (maxHeight - image.height) / 2;
+            image.style.top = top + "px";
+        } else {
+            image.style.top = 0 + "px";
+        }
+    }
+
+    function PaintImage(image) {
+        $.getJSON("/Art/GetRandomImage",
+            null,
+            function (data) {
+                var fileData = data.fileData;
+
+                image.src = "data:image/png;base64," + fileData;
+
+                resizeImg(image);
+
+                document.getElementById("ArtAutor").innerHTML = data.author;
+                document.getElementById("ArtName").innerHTML = data.name;
+
+            });
+    }
+
+    function MainAction() {
+
+        $("#ArtInfo").fadeIn(7500);
+        $("#ArtImg").fadeOut(7500, function () {
+
+            var image = $("#ArtImg")[0];
+            PaintImage(image);
+
+
+            $("#ArtInfo").fadeOut(10000);
+            $("#ArtImg").fadeIn(10000);
+
+        });
+
+        
+
+        setTimeout(MainAction, 30000);
+    }
+
+    $(document).ready(function () {
+        MainAction();
+    });
+
+</script>
+
+   
+<img id="ArtImg" style="position: absolute;"  />
+
+<div class="col-lg-6 col-lg-offset-3">
+    <div id="ArtInfo" style="text-align: center">
+        <br />
+        <div class="row">
+            <h1 id="ArtAutor" style="color: whitesmoke"></h1>    
+        </div>
+        
+
+        <br />
+        <h1 id="ArtName" style="color: whitesmoke"></h1>
+    </div>    
 </div>
 
 
